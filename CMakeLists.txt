@@ -1,0 +1,34 @@
+# Ajustez en fonction de votre version de CMake
+cmake_minimum_required (VERSION 2.8)
+
+# Nom du projet
+project (RAMMCo)
+
+SET(CMAKE_MODULE_PATH /usr/local/lib/cmake/)
+
+find_package (OpenCV REQUIRED)
+find_package (aruco REQUIRED)
+find_package (Qt4 REQUIRED)
+
+set(EXECUTABLE_OUTPUT_PATH bin)
+SET(CMAKE_CXX_FLAGS "-std=c++11")
+
+file(
+        GLOB_RECURSE
+        source_files
+        src/*.cpp
+)
+
+file(
+        GLOB_RECURSE
+        header_files
+        src/*.h
+)
+
+QT4_WRAP_CPP(header_moc ${header_files})
+
+add_executable (RAMMCo ${source_files} ${header_moc})
+INCLUDE(${QT_USE_FILE})
+ADD_DEFINITIONS(${QT_DEFINITIONS})
+
+target_link_libraries (RAMMCo ${OpenCV_LIBS} ${aruco_LIBS} ${QT_LIBRARIES})
