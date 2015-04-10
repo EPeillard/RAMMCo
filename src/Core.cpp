@@ -112,7 +112,10 @@ void Core::init()
   
   ///If everything goes right, create the transformation matrix
   if(cornersBoard.size()==4)
+  {
+    findHomography(cornersBoard, cornersCamera).convertTo(R2C, CV_32F);
     findHomography(cornersCamera, cornersBoard).convertTo(C2R, CV_32F);
+  }
 #else
   //TODO
 #endif
@@ -124,6 +127,7 @@ void Core::detection()
 
   vector<Point2f> pointCamera;
   vector<Point2f> pointProjector;
+  vector<Point2f> pointReal;
 
   while(pointCamera.size()<8)
   {
@@ -156,7 +160,8 @@ void Core::detection()
   }
   
   ///If everything goes right, create the transformation matrix
-  findHomography(pointProjector, pointCamera).convertTo(P2C, CV_32F);
+  perspectiveTransform(pointCamera,pointReal,C2R);
+  findHomography(pointReal, pointProjector).convertTo(R2P, CV_32F);
   
 #else
   //TODO

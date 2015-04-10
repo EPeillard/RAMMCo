@@ -47,7 +47,10 @@ int main(int argc, char** argv)
     ///Calibration of the projector
     core->detection();
     
+    core->genConvMat();
     proj->setR2P(core->getR2PMat());
+    
+    
     
     //TODO Check the calibration
 

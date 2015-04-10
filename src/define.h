@@ -9,6 +9,8 @@
 
 #include <aruco/aruco.h>
 
+#define KEY_ESCAPE		27
+
 ///Adjust brightness
 #define GRAY_SCALE		0.7
 

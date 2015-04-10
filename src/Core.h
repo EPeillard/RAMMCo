@@ -111,7 +111,10 @@ private:
     Mat P2C;
     /**	\brief Matrix for the conversion from Camera to Real
     **/
-    Mat C2R;
+    Mat C2R;    
+    /**	\brief Matrix for the conversion from Real to Camera
+    **/
+    Mat R2C;
     /**	\brief Matric for the conversion from Real to Projector
      * */
     Mat R2P;
