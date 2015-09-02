@@ -1,0 +1,52 @@
+************************************************************************
+*                Poutre 1D elastique en bois                           *
+*                    Fichier exemple                                   *
+*                  Voir aussi Polycopie                                *
+************************************************************************
+OPTI ECHO 0;
+TITR 'Poutre 1D elastique en bois' ;
+OPTI DIME 2 ELEM SEG2 ;
+
+* Donnees du probleme (Unités SI)
+F1 = -1500;
+L1 = 2.00; 
+h1= 0.25;
+b1 = 0.06 ;
+E1 = 12000E6 ; 
+NU1= 0.3 ;
+IGZ1 = (h1**3)*b1/12 ;
+S1=b1*h1;
+
+* Geometrie
+P1=0. 0.;
+P2=L1 0.;
+NEL1 = 100 ;
+
+POUTRE1 = P1 DROI NEL1 P2 ;
+
+* Modele
+MODL1 = MODE POUTRE1 MECANIQUE ELASTIQUE ISOTROPE POUT;
+
+* Materiau
+MATE1 = MATE MODL1 YOUN E1 NU NU1 SECT S1 INRZ IGZ1;
+
+* Conditions aux limites
+CL1 = BLOQ 'DEPL' 'ROTA' P1;
+
+* Chargement  
+FO1 = FORC (0. F1) P2 ;
+
+* Resolution 
+RIG1 = RIGI MODL1 MATE1;
+RIGTOT1 = RIG1 ET CL1;
+DEPL1 = RESO RIGTOT1 FO1;
+
+* Post Traitement
+FLECHE1 = 1e3 * (EXTR DEPL1 UY P2);
+MESS 'Fleche : ' FLECHE1 'mm' ;
+
+DEF0 = DEFO POUTRE1 DEPL1 0. BLAN;
+DEF1 = DEFO POUTRE1 DEPL1 ROUG;
+TRAC (DEF0 ET DEF1);
+
+FIN ;

@@ -83,3 +83,14 @@ void Projector::setR2P(Mat* mat)
 {
     R2P = mat;
 }
+
+void Projector::checkCalib()
+{
+  matDraw=cv::Scalar(0,0,0);
+  circle(matDraw,MARKER_B1_UL,20,Scalar(255,255,255),-1);
+  circle(matDraw,MARKER_B1_UR,20,Scalar(255,255,255),-1);
+  circle(matDraw,MARKER_B1_LR,20,Scalar(255,255,255),-1);
+  circle(matDraw,MARKER_B1_LL,20,Scalar(255,255,255),-1);
+  imshow(WINDOW_PROJECTOR, matDraw);
+}
+

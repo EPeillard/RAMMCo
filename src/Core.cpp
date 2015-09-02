@@ -68,53 +68,60 @@ void Core::init()
   
   MarkerDetector myDetector;
   vector <Marker> markers;
-
-  ///Detecting the markers on the board
-  myDetector.detect(src,markers);
-
-  for (unsigned int i=0;i<markers.size();i++){
-    if(markers[i].id==N_MARKER_B1_UR || 
-      markers[i].id==N_MARKER_B1_UL || 
-      markers[i].id==N_MARKER_B1_LR || 
-      markers[i].id==N_MARKER_B1_LL)
-	nbCornersDetected[0]++;
-  }
-  
   vector<Point2f> cornersCamera;
   vector<Point2f> cornersBoard;
-  
-  ///If a board is detected, fill the vector with their corners position
-  if(nbCornersDetected[0]==4)
-  {
+
+  while(cornersBoard.size()<4){
+    
+    ///Detecting the markers on the board
+    myDetector.detect(src,markers);
+    nbCornersDetected[0]=0;
+
     for (unsigned int i=0;i<markers.size();i++){
-      if(markers[i].id==N_MARKER_B1_UR)
-      {
-	cornersCamera.push_back(markers[i].getCenter());
-	cornersBoard.push_back(MARKER_B1_UR);
-      }      
-      if(markers[i].id==N_MARKER_B1_UL)
-      {
-	cornersCamera.push_back(markers[i].getCenter());
-	cornersBoard.push_back(MARKER_B1_UL);
-      }
-      if(markers[i].id==N_MARKER_B1_LL)
-      {
-	cornersCamera.push_back(markers[i].getCenter());
-	cornersBoard.push_back(MARKER_B1_LL);
-      }
-      if(markers[i].id==N_MARKER_B1_LR)
-      {
-	cornersCamera.push_back(markers[i].getCenter());
-	cornersBoard.push_back(MARKER_B1_LR);
+      if(markers[i].id==N_MARKER_B1_UR || 
+	markers[i].id==N_MARKER_B1_UL || 
+	markers[i].id==N_MARKER_B1_LR || 
+	markers[i].id==N_MARKER_B1_LL)
+	  nbCornersDetected[0]++;
+    }
+      
+    ///If a board is detected, fill the vector with their corners position
+    if(nbCornersDetected[0]==4)
+    {
+      for (unsigned int i=0;i<markers.size();i++){
+	if(markers[i].id==N_MARKER_B1_UR)
+	{
+	  cornersCamera.push_back(markers[i].getCenter());
+	  cornersBoard.push_back(MARKER_B1_UR);
+	}      
+	if(markers[i].id==N_MARKER_B1_UL)
+	{
+	  cornersCamera.push_back(markers[i].getCenter());
+	  cornersBoard.push_back(MARKER_B1_UL);
+	}
+	if(markers[i].id==N_MARKER_B1_LL)
+	{
+	  cornersCamera.push_back(markers[i].getCenter());
+	  cornersBoard.push_back(MARKER_B1_LL);
+	}
+	if(markers[i].id==N_MARKER_B1_LR)
+	{
+	  cornersCamera.push_back(markers[i].getCenter());
+	  cornersBoard.push_back(MARKER_B1_LR);
+	}
       }
     }
-  }
-  
-  ///If everything goes right, create the transformation matrix
-  if(cornersBoard.size()==4)
-  {
-    findHomography(cornersBoard, cornersCamera).convertTo(R2C, CV_32F);
-    findHomography(cornersCamera, cornersBoard).convertTo(C2R, CV_32F);
+    
+    ///If everything goes right, create the transformation matrix
+    if(cornersBoard.size()==4)
+    {
+      findHomography(cornersBoard, cornersCamera).convertTo(R2C, CV_32F);
+      findHomography(cornersCamera, cornersBoard).convertTo(C2R, CV_32F);
+    }
+    else {
+      cornersBoard.clear();
+      cornersCamera.clear();
+    }
   }
 #else
   //TODO

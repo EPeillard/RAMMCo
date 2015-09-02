@@ -36,24 +36,33 @@ using namespace rammco;
 /** @function main */
 int main(int argc, char** argv)
 {
-    Projector* proj = new Projector();
-    Camera* camera = new Camera();
-    Simulation* simu = new Simulation();
-    Core* core = new Core(camera, proj, simu);
+    string rep;
+    
+    while(rep!="o"||rep!="O"){
+      Projector* proj = new Projector();
+      Camera* camera = new Camera();
+      Simulation* simu = new Simulation();
+      Core* core = new Core(camera, proj, simu);
 
-    ///Calibration of the camera
-    core->init();
+      cout << "Calibration de la camera ..." << endl; 
+      core->init();
+      cout << "Fait" << endl; 
 
-    ///Calibration of the projector
-    core->detection();
+      cout << "Calibration du projecteur ..." << endl; 
+      core->detection();
+      cout << "Fait" << endl; 
+      
+      core->genConvMat();
+      proj->setR2P(core->getR2PMat());
+      
+      //Check the calibration
+      proj->checkCalib();
+      cout<<"La calibration est-elle correcte ? [O/N]  " << endl; 
+      cin >> rep; 
+    }
     
-    core->genConvMat();
-    proj->setR2P(core->getR2PMat());
+    cout << "Début de la simulation" << endl; 
     
-    
-    
-    //TODO Check the calibration
-
     waitKey(1000);
 
     return(0);

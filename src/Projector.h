@@ -80,6 +80,11 @@ public:
     void setR2P(Mat*);
 
     Mat matDraw; //TODO faire un getter
+    
+    /** \fn void checkCalib()
+      * Diplay white circle on each corner
+      **/
+    void checkCalib();
 
 private:
 
