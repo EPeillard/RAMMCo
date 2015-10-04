@@ -79,6 +79,27 @@ void Projector::draw(int mode, int x, int y, int i)
     }
     imshow(WINDOW_PROJECTOR, matDraw);
 }
+
+void Projector::draw(string s)
+{
+  Mat image;
+  image = imread(s, CV_LOAD_IMAGE_COLOR);   // Read the file
+
+  if(! image.data )                              // Check for invalid input
+  {
+      cerr <<  "Could not open or find the image" << std::endl ;
+      return;
+  }
+  
+  matDraw=image; //TODO adjust size
+  
+  cv::warpPerspective(matDraw, matDraw, *R2P, matDraw.size());
+  
+  imshow(WINDOW_PROJECTOR, matDraw);
+  
+}
+
+
 void Projector::setR2P(Mat* mat)
 {
     R2P = mat;

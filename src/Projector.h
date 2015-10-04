@@ -72,6 +72,8 @@ public:
       * \arg Mat image to draw
       **/
     void draw(Mat *mat);
+    
+    void draw(std::string);
 
     /** \fn void seR2P(Mat*)
       * Setter for the R2P matrix

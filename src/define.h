@@ -8,6 +8,7 @@
 #define DEFINE_H
 
 #include <aruco/aruco.h>
+#include <string>
 
 #define KEY_ESCAPE		27
 
@@ -39,6 +40,10 @@ const cv::Point2f MARKER_B1_UL(0,0);
 const cv::Point2f MARKER_B1_UR(0,50);
 const cv::Point2f MARKER_B1_LL(50,0);
 const cv::Point2f MARKER_B1_LR(50,50);
+
+//Mobile points names
+const std::string MOBILE_POINT[10] = {"M0","M1","M2","M3","M4","M5","M6","M7","M8","M9"};
+const int MOBILE_ARCUO[10] = {30,31,32,33,34,35,36,37,38,39};
 
 ///Ratio of the windows size for the marker size
 #define RATIO_MARKER_SIZE	0.1
