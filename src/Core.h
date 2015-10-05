@@ -15,6 +15,13 @@
 #include "opencv2/calib3d/calib3d.hpp"
 #include <aruco/aruco.h>
 
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <string>
+#include <iostream>
+
 #include "define.h"
 #include "Camera.h"
 #include "Projector.h"
@@ -94,6 +101,12 @@ public:
      * \brief Get the Real to Projector Matrix
      * */
     Mat* getR2PMat();
+    
+    void initSimu();
+    void loopSimu();
+    void adjustDepl(Point2f[]);
+    unsigned replace_word(std::string &original, const std::string &aTrouver, 
+                                             const std::string &aRemplacer);
 
 private:
     /**	\brief Source Mat for image processing
@@ -128,6 +141,8 @@ private:
     /**	\brief Simulation object of the project
     **/
     Simulation* simu;
+    
+    cv::Point2f ref[10];
 
 };
 

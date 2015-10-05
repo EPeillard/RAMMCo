@@ -45,7 +45,6 @@ Core::Core(Camera* camera, Projector* proj, Simulation* simu)
 #ifdef COMP_MOD_VERBOSE
     namedWindow(WINDOW_VERBOSE, CV_WINDOW_AUTOSIZE);
 #endif // COMP_MOD_VERBOSE
-
 }
 
 Core::~Core()
@@ -180,3 +179,125 @@ Mat* Core::getR2PMat()
   return &R2P;
 }
 
+void Core::initSimu()
+{
+    Point2f Pnull(-1,-1);
+    for(int i=0;i<10;i++)
+      ref[i] = Pnull;
+	  
+    src = camera->getFrame();
+        
+    MarkerDetector myDetector;
+    vector <Marker> markers;
+    
+    vector<Point2f> realPoint;
+
+    myDetector.detect(src,markers);
+
+    for (unsigned int i=0;i<markers.size();i++){
+	for(unsigned int j=0;j<10;j++){
+	  if(markers[i].id == MOBILE_ARCUO[j]) {
+	    vector<Point2f> point;
+	    point.push_back(markers[i].getCenter());
+	    perspectiveTransform(point,realPoint,C2R);
+	    ref[j]=realPoint[0];
+	    
+	    cout << "M"<<j<<" detected"<<endl; 
+	  }
+	}
+    }
+}
+
+void Core::loopSimu()
+{
+  //Detecte les déplacements des points trackés
+  src = camera->getFrame();
+      
+  MarkerDetector myDetector;
+  vector <Marker> markers;
+  
+  vector<Point2f> realPoint;
+  Point2f depl[10];
+  Point2f Pnull(-1,-1);
+  for(int i=0;i<10;i++)
+    depl[i] = Pnull;
+
+  myDetector.detect(src,markers);
+  for (unsigned int i=0;i<markers.size();i++){
+    for(unsigned int j=0;j<10;j++){
+      if(markers[i].id == MOBILE_ARCUO[j]){
+	vector<Point2f> point;
+	point.push_back(markers[i].getCenter());
+	perspectiveTransform(point,realPoint,C2R);
+	
+	depl[j] = realPoint[0]-ref[j];
+      }
+    }
+  }
+  
+  adjustDepl(depl);  
+  
+  system("castem15 Cast3M/demoD.dgibi");
+  system("convert -density 200 Cast3M/demoD.ps -rotate 90 Cast3M/demoD.jpg"); //Imagemagick script
+  
+  proj->draw("Cast3M/demoD.jpg");
+
+}
+
+void Core::adjustDepl(Point2f depl[])
+{
+  ifstream fichier("demo.dgibi", ios::in);  // on ouvre le fichier en lecture
+  ostringstream stream;
+ 
+  if(!(fichier))
+  {   
+    cerr<<"Impossible d'ouvrir le fichier !" << endl;
+    return ;
+  }
+  
+  string line;
+  
+  while(getline(fichier, line)){
+    for (int i=0;i<10;i++){
+      std::stringstream sstm;
+      sstm << "M" << i;
+      
+      string s1 = sstm.str()+"x";
+      string s2 = to_string(depl[i].x);
+      replace_word(line,s1,s2);
+      
+      s1 = sstm.str()+"y";
+      s2 = to_string(depl[i].y);
+      replace_word(line,s1,s2);
+    }
+    stream << line << "\n";
+  }
+  
+  ofstream out("demoD.dgibi",ios::out);  
+  if(!(out))
+  {   
+    cerr<<"Impossible d'ouvrir le fichier !" << endl;
+    return ;
+  }
+  out << stream;
+  
+  out.close();
+  fichier.close();
+	  
+}
+
+unsigned Core::replace_word(std::string &original, const std::string &aTrouver, 
+                                             const std::string &aRemplacer)
+{
+	unsigned n = original.find(aTrouver);
+
+	if (n==std::string::npos)
+	{
+		return 0;
+	}
+	else
+	{
+		original.replace(n,aTrouver.size(),aRemplacer);
+		return 1+replace_word(original, aTrouver, aRemplacer);
+	}
+}

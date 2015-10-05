@@ -1,52 +1,76 @@
-************************************************************************
-*                Poutre 1D elastique en bois                           *
-*                    Fichier exemple                                   *
-*                  Voir aussi Polycopie                                *
-************************************************************************
-OPTI ECHO 0;
 TITR 'Poutre 1D elastique en bois' ;
-OPTI DIME 2 ELEM SEG2 ;
+OPTI DIME 2;
+OPTI ELEM TRI3;
+OPTI MODE PLAN CONT;
+OPTI TRAC PSC;
 
 * Donnees du probleme (Unités SI)
-F1 = -1500;
+F1 = -1.5E-3;
 L1 = 2.00; 
 h1= 0.25;
 b1 = 0.06 ;
-E1 = 12000E6 ; 
-NU1= 0.3 ;
-IGZ1 = (h1**3)*b1/12 ;
-S1=b1*h1;
+E1 = 1.2E4 ; 
+Poisson = 0.3 ;
+
+Izz1 = (h1**3)*b1/12 ;
 
 * Geometrie
 P1=0. 0.;
 P2=L1 0.;
-NEL1 = 100 ;
+P3=L1 h1;
+P4=0 h1;
+Nx=20;
+Ny=5;
 
-POUTRE1 = P1 DROI NEL1 P2 ;
+L12 = P1 DROIT Nx P2;
+L23 = P2 DROIT Ny P3;
+L34 = P3 DROIT Nx P4;
+L41 = P4 DROIT Ny P1;
+Surf1 = DALL L12 L23 L34 L41;
 
-* Modele
-MODL1 = MODE POUTRE1 MECANIQUE ELASTIQUE ISOTROPE POUT;
+* Modele et materiau
+Mod1 = MODE Surf1 MECANIQUE ELASTIQUE ;
+CarMat1=MATE Mod1 YOUN E1 NU Poisson DIM3 b1 ;
 
-* Materiau
-MATE1 = MATE MODL1 YOUN E1 NU NU1 SECT S1 INRZ IGZ1;
 
 * Conditions aux limites
-CL1 = BLOQ 'DEPL' 'ROTA' P1;
+CL1=BLOQ L41 DEPL ;
+CL2=BLOQ UX P3;
+CL3=BLOQ UY P3;
+DEP1=DEPI CL2 M0x;
+DEP2=DEPI CL3 M0y;
 
-* Chargement  
-FO1 = FORC (0. F1) P2 ;
+* Construction des matrices elementaires
+Ri1= RIGI Mod1 CarMat1 ;
+Rigt1 = Ri1 ET CL1 ET CL2 ET CL3;
 
-* Resolution 
-RIG1 = RIGI MODL1 MATE1;
-RIGTOT1 = RIG1 ET CL1;
-DEPL1 = RESO RIGTOT1 FO1;
+*+++++++++++++++++++++++++++++++++++++++++
+* Resolution
+*+++++++++++++++++++++++++++++++++++++++++
+*
+DEPTOT = DEP1 ET DEP2;
+Depl1=RESO Rigt1 DEPTOT;
 
-* Post Traitement
-FLECHE1 = 1e3 * (EXTR DEPL1 UY P2);
-MESS 'Fleche : ' FLECHE1 'mm' ;
+* Visualisation de la structure deformee
+Def0=DEFO Surf1 Depl1 0. BLANC ;
+Def1=DEFO Surf1 Depl1 ROUGE ;
+*TITRE ’Deformee’ ;
+*TRAC (Def0 ET Def1) ;
 
-DEF0 = DEFO POUTRE1 DEPL1 0. BLAN;
-DEF1 = DEFO POUTRE1 DEPL1 ROUG;
-TRAC (DEF0 ET DEF1);
+* Calcul des contraintes
+SIG = SIGMA Mod1 CarMat1 Depl1 ;
+
+* Visualisation des contraintes
+SIGxx = EXCO SMXX SIG ;
+*TITRE ’Contraintes Sxx’ ;
+*TRACE SIGxx Mod1 def1 ;
+
+SIGyy = EXCO SMYY SIG ;
+*TITRE ’Contraintes Syy’ ;
+*TRACE SIGyy Mod1 def1 ;
+
+SIGVM = VMIS Mod1 SIG ;
+TITRE ’Contraintes Von Mises’ ;
+TRACE SIGVM Mod1 def1 ;
 
 FIN ;

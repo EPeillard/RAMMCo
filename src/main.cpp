@@ -38,11 +38,17 @@ int main(int argc, char** argv)
 {
     string rep;
     
+    Projector* proj;
+    Camera* camera;
+    Simulation* simu;
+    Core* core;
+    
     while(rep!="o"||rep!="O"){
-      Projector* proj = new Projector();
-      Camera* camera = new Camera();
-      Simulation* simu = new Simulation();
-      Core* core = new Core(camera, proj, simu);
+    
+      proj = new Projector();
+      camera = new Camera();
+      simu = new Simulation();
+      core = new Core(camera, proj, simu);
 
       cout << "Calibration de la camera ..." << endl; 
       core->init();
@@ -63,7 +69,14 @@ int main(int argc, char** argv)
     
     cout << "Début de la simulation" << endl; 
     
-    waitKey(1000);
+    waitKey(100);
+    
+    core->initSimu();
+    
+    while(1)
+    {
+      core->loopSimu();
+    }
 
     return(0);
 }
