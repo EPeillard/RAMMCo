@@ -62,7 +62,6 @@ void Core::init()
 #ifndef COMP_MOD_NO_INIT
   ///Create a white window in order to facilitate the calibration
   proj->draw(PROJ_MOD_NOTHING);
-  src = camera->getFrame();
 
   int nbCornersDetected[NB_BOARD] = {0};
   
@@ -72,6 +71,7 @@ void Core::init()
   vector<Point2f> cornersBoard;
 
   while(cornersBoard.size()<4){
+    src = camera->getFrame();
     
     ///Detecting the markers on the board
     myDetector.detect(src,markers);

@@ -4,6 +4,8 @@ using namespace rammco;
 
 Camera::Camera()
 {
+  
+#ifndef PICAMERA
     id=0;
     nbTests=0;
     capture = VideoCapture(id);
@@ -17,23 +19,30 @@ Camera::Camera()
     refreshing=true;
     capture>>frame;
     refresh = thread(&Camera::refreshFrame, this);
+#else
+    capture.set(CV_CAP_PROP_FORMAT,CV_8UC1);
+    if(!capture.open()) throw runtime_error("No PIcamera found");
+#endif
 }
 
+#ifndef PICAMERA
 void Camera::refreshFrame()
 {
     while(refreshing)
     {
         capture >> frame;
-        imshow(WINDOW_CAMERA,frame);
         waitKey(50);
     }
 }
+#endif
 
 Camera::~Camera()
 {
     capture.release();
 }
 
+
+#ifndef PICAMERA
 void Camera::nextCam()
 {
     capture.release();
@@ -48,12 +57,21 @@ void Camera::nextCam()
         if(nbTests>5) throw runtime_error("No camera found");
     }
 }
+#endif
 
 Mat Camera::getFrame()
 {
+#ifdef PICAMERA
+    capture.grab();
+    capture.retrieve(frame);
+#endif
+    imshow(WINDOW_CAMERA,frame);
+    waitKey(50);
     return frame;
 }
 
+
+#ifndef PICAMERA
 void Camera::close()
 {
     refreshing=false;
@@ -100,6 +118,7 @@ Mat Camera::correction(IplImage image)
 
     return view;
 }
+#endif
 
 //All the following functions come from OpenCv website examples
 //It's quite a mess, and it need to be reorgenised
@@ -296,6 +315,7 @@ enum { DETECTION = 0, CAPTURING = 1, CALIBRATED = 2 };
 bool runCalibrationAndSave(Settings& s, Size imageSize, Mat&  cameraMatrix, Mat& distCoeffs,
                            vector<vector<Point2f> > imagePoints );
 
+#ifndef PICAMERA
 void Camera::genYML(int argc, char* argv[])
 {
     Settings s;
@@ -455,6 +475,7 @@ void Camera::genYML(int argc, char* argv[])
         }
     }
 }
+#endif
 
 static double computeReprojectionErrors( const vector<vector<Point3f> >& objectPoints,
                                          const vector<vector<Point2f> >& imagePoints,

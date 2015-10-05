@@ -9,6 +9,8 @@
   * Declaration of the class Camera
   **/
 
+#define PICAMERA
+
 #ifndef CAMERA_H
 #define CAMERA_H
 
@@ -26,6 +28,10 @@
 
 #include <stdexcept>
 #include <thread>
+
+#ifdef PICAMERA
+#include <raspicam/raspicam_cv.h>
+#endif
 
 #include "define.h"
 
@@ -54,10 +60,12 @@ public:
     **/
     ~Camera();
 
+#ifndef PICAMERA
     /** \fn nextCam()
       * Use an other camera
     **/
     void nextCam();
+#endif
 
     /** \fn IplImage* getFrame()
       * Give back a image just taken from the camera
@@ -65,6 +73,7 @@ public:
       **/
     Mat getFrame();
 
+#ifndef PICAMERA
     /** \fn close()
       * Close the steam to the camera
       **/
@@ -80,9 +89,15 @@ public:
       * Be careful, this function DOESN'T WORK, it normally corrects an image just taken.
     **/
     Mat correction(IplImage);
+#endif
 
 private:
+  
+    /** Most recent frame
+    **/
+    Mat frame;
 
+#ifndef PICAMERA
     /** Camera stream for taking frames
     **/
     VideoCapture capture;
@@ -103,13 +118,12 @@ private:
 
     void refreshFrame();
 
-    /** Most recent frame
-    **/
-    Mat frame;
-
     bool refreshing;
 
     thread refresh;
+#else
+    raspicam::RaspiCam_Cv capture;
+#endif
 };
 
 }
