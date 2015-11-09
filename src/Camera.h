@@ -9,7 +9,7 @@
   * Declaration of the class Camera
   **/
 
-#define PICAMERA
+//#define PICAMERA
 
 #ifndef CAMERA_H
 #define CAMERA_H

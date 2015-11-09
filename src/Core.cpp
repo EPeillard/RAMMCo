@@ -138,6 +138,7 @@ void Core::detection()
   while(pointCamera.size()<8)
   {
     pointCamera.clear();
+    pointProjector.clear();
     
     vector<int> markerIds;
     vector<Point> markerPoints;
@@ -181,6 +182,7 @@ Mat* Core::getR2PMat()
 
 void Core::initSimu()
 {
+    int michel=0;
     Point2f Pnull(-1,-1);
     for(int i=0;i<10;i++)
       ref[i] = Pnull;
@@ -192,19 +194,23 @@ void Core::initSimu()
     
     vector<Point2f> realPoint;
 
-    myDetector.detect(src,markers);
-
-    for (unsigned int i=0;i<markers.size();i++){
-	for(unsigned int j=0;j<10;j++){
-	  if(markers[i].id == MOBILE_ARCUO[j]) {
-	    vector<Point2f> point;
-	    point.push_back(markers[i].getCenter());
-	    perspectiveTransform(point,realPoint,C2R);
-	    ref[j]=realPoint[0];
-	    
-	    cout << "M"<<j<<" detected"<<endl; 
+    while(michel<1){ //TODO something better
+      michel=0;
+      myDetector.detect(src,markers);
+	
+      for (unsigned int i=0;i<markers.size();i++){
+	  for(unsigned int j=0;j<10;j++){
+	    if(markers[i].id == MOBILE_ARCUO[j]) {
+	      vector<Point2f> point;
+	      point.push_back(markers[i].getCenter());
+	      perspectiveTransform(point,realPoint,C2R);
+	      ref[j]=realPoint[0];
+	      
+	      cout << "M"<<j<<" detected"<<endl; 
+	      michel++;
+	    }
 	  }
-	}
+      }
     }
 }
 
@@ -222,22 +228,31 @@ void Core::loopSimu()
   for(int i=0;i<10;i++)
     depl[i] = Pnull;
 
-  myDetector.detect(src,markers);
-  for (unsigned int i=0;i<markers.size();i++){
-    for(unsigned int j=0;j<10;j++){
-      if(markers[i].id == MOBILE_ARCUO[j]){
-	vector<Point2f> point;
-	point.push_back(markers[i].getCenter());
-	perspectiveTransform(point,realPoint,C2R);
-	
-	depl[j] = realPoint[0]-ref[j];
+  int michel=0;
+  
+  while(michel<1){
+    michel=0;
+    myDetector.detect(src,markers);
+    for (unsigned int i=0;i<markers.size();i++){
+      for(unsigned int j=0;j<10;j++){
+	if(markers[i].id == MOBILE_ARCUO[j]){
+	  vector<Point2f> point;
+	  point.push_back(markers[i].getCenter());
+	  perspectiveTransform(point,realPoint,C2R);
+	  
+	  depl[j] = realPoint[0]-ref[j];
+	  
+	  cout << "M"<<j<<" detected"<<endl; 
+	  michel++;
+	}
       }
     }
   }
   
   adjustDepl(depl);  
   
-  system("./castem Cast3M/demoD.dgibi");
+  //system("./castem Cast3M/demoD.dgibi");
+  system("castem15 Cast3M/demoD.dgibi | grep M0");
   system("convert -density 50 Cast3M/demoD.ps -rotate 90 Cast3M/demoD.jpg"); //Imagemagick script
   
   proj->draw("Cast3M/demoD.jpg");
@@ -268,12 +283,14 @@ void Core::adjustDepl(Point2f depl[])
       sstm << "M" << i;
       
       string s1 = sstm.str()+"x";
-      string s2 = to_string(depl[i].x);
+      string s2 = to_string(depl[i].y);
       replace_word(line,s1,s2);
       
       s1 = sstm.str()+"y";
-      s2 = to_string(depl[i].y);
+      s2 = to_string(-depl[i].x);
       replace_word(line,s1,s2);
+  
+      cout << "Depl "<<i<<" x : "<<depl[i].x<<" ; y :"<<depl[i].y<<endl; 
     }
     out << line << "\n";
   }

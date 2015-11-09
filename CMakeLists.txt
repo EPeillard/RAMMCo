@@ -4,11 +4,16 @@ cmake_minimum_required (VERSION 2.8)
 # Nom du projet
 project (RAMMCo)
 
+set(useRaspicam FALSE)
+
 SET(CMAKE_MODULE_PATH /usr/local/lib/cmake/)
 
 find_package (OpenCV REQUIRED)
 find_package (aruco REQUIRED)
-find_package (raspicam REQUIRED)
+
+if(useRaspicam)
+  find_package (raspicam REQUIRED)
+endif(useRaspicam)
 
 
 set(EXECUTABLE_OUTPUT_PATH bin)
@@ -29,5 +34,9 @@ file(
 
 
 add_executable (RAMMCo ${source_files} ${header_files})
+
+if(useRaspicam)
+  target_compile_definitions(RAMMCo PRIVATE PICAMERA)
+endif(useRaspicam)
 
 target_link_libraries (RAMMCo ${OpenCV_LIBS} ${aruco_LIBS} ${raspicam_CV_LIBS})
