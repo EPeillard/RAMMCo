@@ -237,8 +237,8 @@ void Core::loopSimu()
   
   adjustDepl(depl);  
   
-  system("castem15 Cast3M/demoD.dgibi");
-  system("convert -density 200 Cast3M/demoD.ps -rotate 90 Cast3M/demoD.jpg"); //Imagemagick script
+  system("./castem Cast3M/demoD.dgibi");
+  system("convert -density 50 Cast3M/demoD.ps -rotate 90 Cast3M/demoD.jpg"); //Imagemagick script
   
   proj->draw("Cast3M/demoD.jpg");
 
@@ -246,12 +246,17 @@ void Core::loopSimu()
 
 void Core::adjustDepl(Point2f depl[])
 {
-  ifstream fichier("demo.dgibi", ios::in);  // on ouvre le fichier en lecture
-  ostringstream stream;
- 
+  ifstream fichier("Cast3M/demo.dgibi", ios::in);  // on ouvre le fichier en lecture
   if(!(fichier))
   {   
-    cerr<<"Impossible d'ouvrir le fichier !" << endl;
+    cerr<<"Impossible d'ouvrir le fichier a lire !" << endl;
+    return ;
+  }
+  
+  ofstream out("Cast3M/demoD.dgibi",ios::out);  
+  if(!(out))
+  {   
+    cerr<<"Impossible d'ouvrir le fichier a modifier !" << endl;
     return ;
   }
   
@@ -270,17 +275,9 @@ void Core::adjustDepl(Point2f depl[])
       s2 = to_string(depl[i].y);
       replace_word(line,s1,s2);
     }
-    stream << line << "\n";
+    out << line << "\n";
   }
-  
-  ofstream out("demoD.dgibi",ios::out);  
-  if(!(out))
-  {   
-    cerr<<"Impossible d'ouvrir le fichier !" << endl;
-    return ;
-  }
-  out << stream;
-  
+    
   out.close();
   fichier.close();
 	  

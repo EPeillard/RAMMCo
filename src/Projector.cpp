@@ -93,7 +93,7 @@ void Projector::draw(string s)
   
   matDraw=image; //TODO adjust size
   
-  cv::warpPerspective(matDraw, matDraw, *R2P, matDraw.size());
+  //cv::warpPerspective(matDraw, matDraw, *R2P, matDraw.size());
   
   imshow(WINDOW_PROJECTOR, matDraw);
   

@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     Simulation* simu;
     Core* core;
     
-    while(rep!="o"||rep!="O"){
+    while(rep!="o"&&rep!="O"){
     
       proj = new Projector();
       camera = new Camera();
