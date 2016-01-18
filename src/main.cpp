@@ -68,7 +68,7 @@ int main(int argc, char** argv)
       
       //Check the calibration
       proj->checkCalib();
-      cout<<"La calibration est-elle correcte ? [O/N]  " << endl; 
+      cout<<"La calibration est-elle correcte ? [o/N]  " << endl; //TODO fix si non (plante)
       cin >> rep; 
     }
     

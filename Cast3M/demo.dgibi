@@ -60,6 +60,17 @@ Def1=DEFO Surf1 Depl1 ROUGE ;
 * Calcul des contraintes
 SIG = SIGMA Mod1 CarMat1 Depl1 ;
 
+** Canevas
+Fixe1 = -20. -20. ;
+Fixe2 = 20. -20. ;
+Fixe3 = 20. 20. ;
+Fixe4 = -20. 20. ;
+LF12 = Fixe1 DROIT 20 Fixe2;
+LF23 = Fixe2 DROIT 5 Fixe3;
+LF34 = Fixe3 DROIT 20 Fixe4;
+LF41 = Fixe4 DROIT 5 Fixe1;
+Surf2 = DALL LF12 LF23 LF34 LF41;
+
 * Visualisation des contraintes
 SIGxx = EXCO SMXX SIG ;
 *TITRE ’Contraintes Sxx’ ;
@@ -71,6 +82,6 @@ SIGyy = EXCO SMYY SIG ;
 
 SIGVM = VMIS Mod1 SIG ;
 TITRE ’Contraintes Von Mises’ ;
-TRACE SIGVM Mod1 def1 ;
+TRACE SIGVM Mod1 def1;
 
 FIN ;

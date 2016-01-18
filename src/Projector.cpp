@@ -113,5 +113,6 @@ void Projector::checkCalib()
   circle(matDraw,MARKER_B1_LR,20,Scalar(255,255,255),-1);
   circle(matDraw,MARKER_B1_LL,20,Scalar(255,255,255),-1);
   imshow(WINDOW_PROJECTOR, matDraw);
+  waitKey(1);
 }
 

@@ -182,20 +182,19 @@ Mat* Core::getR2PMat()
 
 void Core::initSimu()
 {
-    int michel=0;
+    int toto=0;
     Point2f Pnull(-1,-1);
     for(int i=0;i<10;i++)
       ref[i] = Pnull;
-	  
-    src = camera->getFrame();
         
     MarkerDetector myDetector;
     vector <Marker> markers;
     
     vector<Point2f> realPoint;
 
-    while(michel<1){ //TODO something better
-      michel=0;
+    while(toto<1){ //TODO something better
+      toto=0;
+      src = camera->getFrame();
       myDetector.detect(src,markers);
 	
       for (unsigned int i=0;i<markers.size();i++){
@@ -207,7 +206,7 @@ void Core::initSimu()
 	      ref[j]=realPoint[0];
 	      
 	      cout << "M"<<j<<" detected"<<endl; 
-	      michel++;
+	      toto++;
 	    }
 	  }
       }
@@ -217,7 +216,6 @@ void Core::initSimu()
 void Core::loopSimu()
 {
   //Detecte les déplacements des points trackés
-  src = camera->getFrame();
       
   MarkerDetector myDetector;
   vector <Marker> markers;
@@ -228,10 +226,11 @@ void Core::loopSimu()
   for(int i=0;i<10;i++)
     depl[i] = Pnull;
 
-  int michel=0;
+  int toto=0;
   
-  while(michel<1){
-    michel=0;
+  while(toto<1){
+    toto=0;
+    src = camera->getFrame();
     myDetector.detect(src,markers);
     for (unsigned int i=0;i<markers.size();i++){
       for(unsigned int j=0;j<10;j++){
@@ -243,7 +242,7 @@ void Core::loopSimu()
 	  depl[j] = realPoint[0]-ref[j];
 	  
 	  cout << "M"<<j<<" detected"<<endl; 
-	  michel++;
+	  toto++;
 	}
       }
     }
@@ -283,14 +282,14 @@ void Core::adjustDepl(Point2f depl[])
       sstm << "M" << i;
       
       string s1 = sstm.str()+"x";
-      string s2 = to_string(depl[i].y);
+      string s2 = to_string(-depl[i].y);
       replace_word(line,s1,s2);
       
       s1 = sstm.str()+"y";
       s2 = to_string(-depl[i].x);
       replace_word(line,s1,s2);
   
-      cout << "Depl "<<i<<" x : "<<depl[i].x<<" ; y :"<<depl[i].y<<endl; 
+      //cout << "Depl "<<i<<" x : "<<depl[i].x<<" ; y :"<<depl[i].y<<endl; 
     }
     out << line << "\n";
   }
