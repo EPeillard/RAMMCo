@@ -53,7 +53,7 @@ public:
     /** \fn Camera()
       * Main constructor
     **/
-    Camera();
+    Camera(int id = 0);
 
     /** \fn Camera()
       * Main destructor
@@ -115,12 +115,7 @@ private:
       **/
     void emptyBuffer();
 
-
-    void refreshFrame();
-
     bool refreshing;
-
-    thread refresh;
 #else
     raspicam::RaspiCam_Cv capture;
 #endif

@@ -2,11 +2,11 @@
 
 using namespace rammco;
 
-Camera::Camera()
+Camera::Camera(int id)
 {
-  
+    namedWindow(WINDOW_CAMERA, CV_WINDOW_AUTOSIZE );
+    
 #ifndef PICAMERA
-    id=0;
     nbTests=0;
     capture = VideoCapture(id);
     while(!capture.isOpened())
@@ -17,27 +17,17 @@ Camera::Camera()
         if(nbTests>5) throw runtime_error("No camera found");
     }
     refreshing=true;
-    capture>>frame;
-    refresh = thread(&Camera::refreshFrame, this);
 #else
     capture.set(CV_CAP_PROP_FORMAT,CV_8UC1);
     if(!capture.open()) throw runtime_error("No PIcamera found");
 #endif
+    
+    getFrame();
 }
-
-#ifndef PICAMERA
-void Camera::refreshFrame()
-{
-    while(refreshing)
-    {
-        capture >> frame;
-        waitKey(50);
-    }
-}
-#endif
 
 Camera::~Camera()
 {
+    refreshing=false;
     capture.release();
 }
 
@@ -45,7 +35,9 @@ Camera::~Camera()
 #ifndef PICAMERA
 void Camera::nextCam()
 {
+    refreshing=false;
     capture.release();
+    
     id++;
     nbTests=0;
     capture = VideoCapture(id);
@@ -56,17 +48,24 @@ void Camera::nextCam()
         if(id<15) {id=0; nbTests++;}
         if(nbTests>5) throw runtime_error("No camera found");
     }
+    
+    refreshing=true;
+    capture>>frame;
 }
 #endif
 
 Mat Camera::getFrame()
-{
+{  
 #ifdef PICAMERA
     capture.grab();
     capture.retrieve(frame);
+#else
+    for (int i=0; i<6;i++){capture>>frame;} //TODO something better
 #endif
+    
     imshow(WINDOW_CAMERA,frame);
-    waitKey(50);
+    waitKey(1);
+    
     return frame;
 }
 

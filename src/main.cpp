@@ -45,8 +45,13 @@ int main(int argc, char** argv)
     
     while(rep!="o"&&rep!="O"){
     
+      int id = 0;
+      
+      cout << "Camera n° ?";
+      cin >> id; 
+      
       proj = new Projector();
-      camera = new Camera();
+      camera = new Camera(id);
       simu = new Simulation();
       core = new Core(camera, proj, simu);
 
