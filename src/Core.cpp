@@ -314,3 +314,43 @@ unsigned Core::replace_word(std::string &original, const std::string &aTrouver,
 		return 1+replace_word(original, aTrouver, aRemplacer);
 	}
 }
+
+vector<Point2f*> Core::reorderPoints(vector<Point2f*>& list_point)
+{
+    /// Creation of the absolute corner of the camera
+    vector<Point2f*> list_corner_absolute_camera;
+    Mat* mat = new Mat(camera->getFrame());
+    list_corner_absolute_camera.push_back(new Point2f(0, 0));
+    list_corner_absolute_camera.push_back(new Point2f(mat->cols, 0));
+    list_corner_absolute_camera.push_back(new Point2f(mat->cols, mat->rows));
+    list_corner_absolute_camera.push_back(new Point2f(0, mat->rows));
+
+    vector<Point2f*> temp = list_point;
+    vector<Point2f*> ret;
+
+    /// While points still int temp (not ordered)
+    while(temp.size()>0)
+    {
+        ///take each point of the camera absolute corners
+        for(int j=0; j<list_corner_absolute_camera.size(); j++)
+        {
+            double d = 99999999999;
+            int i, index=0;
+            ///for each point in temp
+            for(i=0; i<temp.size(); i++)
+            {
+                /// Caculate the distance between the point and a corner
+                Point2f p(temp[i] - list_corner_absolute_camera[j]);
+                double norme = sqrt(pow((temp[i]->x - list_corner_absolute_camera[j]->x), 2)+pow((temp[i]->y - list_corner_absolute_camera[j]->y), 2));
+                /// If the distance is the minimum, the index of the point is saved
+                if(d>norme){d=norme;index=i;}
+            }
+            /// The nearest point of the corner is added to the list
+            ret.push_back(temp[index]);
+            temp.erase(temp.begin()+index);
+        }
+    }
+    ///Empty the list_point
+    while(list_point.size()>0){list_point.pop_back();}
+    return ret;
+}

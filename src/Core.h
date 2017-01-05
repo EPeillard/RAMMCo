@@ -142,6 +142,14 @@ private:
     **/
     Simulation* simu;
     
+    /** \fn vector<Point2f*> reorderPoints(vector<Point2f*>&)
+    * \brief Function reordering the point this way : 0 : top left corner, 1 top right corner, 2 bottom right corner, 3 bottom left corner
+    * It reorder the point to have the top left corner first, then the top right corner, the bottom right corner and at least the bottom left corner.
+    * \arg vector of points
+    * \return reordered vector of points
+    **/
+    std::vector<cv::Point2f*> reorderPoints(std::vector<cv::Point2f*>&);
+    
     cv::Point2f ref[10];
 
 };

@@ -1,5 +1,5 @@
 /**
-  * Function for the calibration between the goban, the camera and the projector
+  * 
   *
   * @author Etienne Peillard
   *
