@@ -27,9 +27,13 @@
 #include "Projector.h"
 #include "Simulation.h"
 
-using namespace cv;
-using namespace std;
-using namespace aruco;
+#ifdef OCTAVE
+  #include <oct.h>
+  #include <octave.h>
+  #include <parse.h>
+  #include <toplev.h>
+#endif
+  
 /** \namespace rammco
   *
   * namespace used to define all the functions used in the rammco project
@@ -100,37 +104,41 @@ public:
     /**	\fn Mat getR2PMat()
      * \brief Get the Real to Projector Matrix
      * */
-    Mat* getR2PMat();
+    cv::Mat* getR2PMat();
     
+    cv::Mat* getI2PMat();
     void initSimu();
     void loopSimu();
-    void adjustDepl(Point2f[]);
+    void adjustDepl(cv::Point2f[]);
     unsigned replace_word(std::string &original, const std::string &aTrouver, 
                                              const std::string &aRemplacer);
 
 private:
     /**	\brief Source Mat for image processing
     **/
-    Mat src;
+    cv::Mat src;
     /**	\brief Source Mat converted in gray
     **/
-    Mat src_gray;
+    cv::Mat src_gray;
     /**	\brief Mat used to display calibration to the user
     **/
-    Mat display;
+    cv::Mat display;
 
     /**	\brief Matrix for the conversion from Projector to Camera
     **/
-    Mat P2C;
+    cv::Mat P2C;
     /**	\brief Matrix for the conversion from Camera to Real
     **/
-    Mat C2R;    
+    cv::Mat C2R;    
     /**	\brief Matrix for the conversion from Real to Camera
     **/
-    Mat R2C;
+    cv::Mat R2C;
     /**	\brief Matric for the conversion from Real to Projector
      * */
-    Mat R2P;
+    cv::Mat R2P;    
+    /**	\brief Matric for the conversion from Image to Projector
+     * */
+    cv::Mat I2P;
     
     /**	\brief Camera object of the project
     **/

@@ -35,9 +35,6 @@
 
 #include "define.h"
 
-using namespace cv;
-using namespace std;
-
 namespace rammco{
 
 /** \class  rammco::Camera Camera.h Camera
@@ -71,7 +68,7 @@ public:
       * Give back a image just taken from the camera
       *
       **/
-    Mat getFrame();
+    cv::Mat getFrame();
 
 #ifndef PICAMERA
     /** \fn close()
@@ -88,19 +85,19 @@ public:
     /** \fn Mat correction(IplImage)
       * Be careful, this function DOESN'T WORK, it normally corrects an image just taken.
     **/
-    Mat correction(IplImage);
+    cv::Mat correction(IplImage);
 #endif
 
 private:
   
     /** Most recent frame
     **/
-    Mat frame;
+    cv::Mat frame;
 
 #ifndef PICAMERA
     /** Camera stream for taking frames
     **/
-    VideoCapture capture;
+    cv::VideoCapture capture;
 
     /** Camera id
     **/

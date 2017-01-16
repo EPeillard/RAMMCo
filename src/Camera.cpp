@@ -1,5 +1,8 @@
 #include "Camera.h"
 
+using namespace cv;
+using namespace std;
+
 using namespace rammco;
 
 Camera::Camera(int id)

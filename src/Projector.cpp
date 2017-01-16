@@ -1,5 +1,9 @@
 #include "Projector.h"
 
+using namespace cv;
+using namespace std;
+using namespace aruco;
+
 using namespace rammco;
 
 Projector::Projector()
@@ -91,9 +95,7 @@ void Projector::draw(string s)
       return;
   }
   
-  matDraw=image; //TODO adjust size
-  
-  //cv::warpPerspective(matDraw, matDraw, *R2P, matDraw.size());
+  cv::warpPerspective(image, matDraw, *I2P, matDraw.size());
   
   imshow(WINDOW_PROJECTOR, matDraw);
   
@@ -105,14 +107,19 @@ void Projector::setR2P(Mat* mat)
     R2P = mat;
 }
 
+void Projector::setI2P(Mat* mat)
+{
+    I2P = mat;
+}
+
 void Projector::checkCalib()
 {
   matDraw=cv::Scalar(0,0,0);
-  circle(matDraw,MARKER_B1_UL,20,Scalar(255,255,255),-1);
-  circle(matDraw,MARKER_B1_UR,20,Scalar(255,255,255),-1);
-  circle(matDraw,MARKER_B1_LR,20,Scalar(255,255,255),-1);
-  circle(matDraw,MARKER_B1_LL,20,Scalar(255,255,255),-1);
+  circle(matDraw,MARKER_B1_UL,2,Scalar(255,255,255),-1);
+  circle(matDraw,MARKER_B1_UR,2,Scalar(255,255,255),-1);
+  circle(matDraw,MARKER_B1_LR,2,Scalar(255,255,255),-1);
+  circle(matDraw,MARKER_B1_LL,2,Scalar(255,255,255),-1);
+  cv::warpPerspective(matDraw, matDraw, *R2P, matDraw.size());
   imshow(WINDOW_PROJECTOR, matDraw);
-  waitKey(1);
 }
 

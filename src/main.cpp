@@ -65,9 +65,11 @@ int main(int argc, char** argv)
       
       core->genConvMat();
       proj->setR2P(core->getR2PMat());
+      proj->setI2P(core->getI2PMat());
       
       //Check the calibration
       proj->checkCalib();
+      waitKey(1);
       cout<<"La calibration est-elle correcte ? [o/N]  " << endl; //TODO fix si non (plante)
       cin >> rep; 
     }
@@ -83,5 +85,9 @@ int main(int argc, char** argv)
       core->loopSimu();
     }
 
+#ifdef OCTAVE
+    clean_up_and_exit(0);
+#else
     return(0);
+#endif
 }

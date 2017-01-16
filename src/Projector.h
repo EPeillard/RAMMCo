@@ -25,10 +25,6 @@
 //rammco includes
 #include "define.h"
 
-using namespace cv;
-using namespace std;
-using namespace aruco;
-
 namespace rammco{
 
 /** \class  rammco::Projector Projector.h Projector
@@ -65,13 +61,13 @@ public:
       * \arg list of the marker centers
       * \arg list of the id
       **/
-    void draw(int, vector<Point> &, vector<int> &);
+    void draw(int, std::vector<cv::Point> &, std::vector<int> &);
 
     /** \fn draw(Mat *mat)
       * Drawing function. It draw on the projector screen
       * \arg Mat image to draw
       **/
-    void draw(Mat *mat);
+    void draw(cv::Mat *mat); //TODO why * ?
     
     void draw(std::string);
 
@@ -79,9 +75,11 @@ public:
       * Setter for the R2P matrix
       * \arg R2P matrix
       **/
-    void setR2P(Mat*);
+    void setR2P(cv::Mat*);
+    
+    void setI2P(cv::Mat*);
 
-    Mat matDraw; //TODO faire un getter
+    cv::Mat matDraw; //TODO faire un getter
     
     /** \fn void checkCalib()
       * Diplay white circle on each corner
@@ -90,7 +88,8 @@ public:
 
 private:
 
-    Mat* R2P;
+    cv::Mat* R2P;
+    cv::Mat* I2P;
 
 };
 

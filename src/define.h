@@ -10,10 +10,13 @@
 #include <aruco/aruco.h>
 #include <string>
 
+//#define CASTEM
+#define OCTAVE
+
 #define KEY_ESCAPE		27
 
 ///Adjust brightness
-#define GRAY_SCALE		0.7
+#define GRAY_SCALE		1 //[0-1] ; 0 = dark, 1 = as usual
 
 ///Projector mod drawing the detection point
 #define PROJ_MOD_DETECTION	1
@@ -37,9 +40,9 @@
 
 ///Marker position on the board (in cm)
 const cv::Point2f MARKER_B1_UL(0,0);
-const cv::Point2f MARKER_B1_UR(0,50);
+const cv::Point2f MARKER_B1_UR(0,70);
 const cv::Point2f MARKER_B1_LL(50,0);
-const cv::Point2f MARKER_B1_LR(50,50);
+const cv::Point2f MARKER_B1_LR(50,70);
 
 //Mobile points names
 const std::string MOBILE_POINT[10] = {"M0","M1","M2","M3","M4","M5","M6","M7","M8","M9"};
