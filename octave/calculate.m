@@ -1,4 +1,4 @@
-function [U] = calculate(depl)
+function [f] = calculate(depl)
 	load("content");
 
 	%imposition des conditions en deplacement : traction simple

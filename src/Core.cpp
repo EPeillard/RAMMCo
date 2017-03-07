@@ -306,6 +306,7 @@ void Core::loopSimu()
   
   //Create new display
   proj->draw("im.jpg");
+  //proj->draw(result(0).img_value());
   
 #endif
   
